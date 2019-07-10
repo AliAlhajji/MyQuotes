@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/edit"
+        android:title="@string/edit_book"
+        app:showAsAction="never"
+        android:icon="@drawable/ic_edit_black_24dp"
+        />
+    <item
+        android:id="@+id/delete"
+        android:title="@string/delete_book"
+        app:showAsAction="never"
+        android:icon="@drawable/ic_delete_white_24dp"
+        />
+
+    <item
+        android:id="@+id/sign_out"
+        android:title="@string/signout"
+        app:showAsAction="never"/>
+
+</menu>

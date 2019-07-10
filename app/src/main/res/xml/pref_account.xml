@@ -1,0 +1,21 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- NOTE: EditTextPreference accepts EditText attributes. -->
+    <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
+
+    <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
+         dismiss it. -->
+    <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
+
+    <EditTextPreference
+        android:id="@+id/pref_email"
+        android:title="@string/email"
+        android:hint="@string/email"
+        android:defaultValue="NONE"
+        />
+
+    <Preference
+        android:key="pref_signout"
+        android:title="@string/signout"/>
+
+</PreferenceScreen>

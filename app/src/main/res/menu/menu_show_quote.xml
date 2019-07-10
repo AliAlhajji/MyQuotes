@@ -1,0 +1,42 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.example.android.ali.myquotes.ui.ShowQuoteActivity">
+    <item
+        android:id="@+id/edit"
+        android:title="@string/edit_quote"
+        app:showAsAction="never"
+        android:icon="@drawable/ic_edit_black_24dp"
+        />
+
+    <item
+        android:id="@+id/delete"
+        android:title="@string/delete_quote"
+        app:showAsAction="never"
+        android:icon="@drawable/ic_delete_white_24dp"
+        />
+
+    <item
+        android:id="@+id/sign_out"
+        android:title="@string/signout"
+        app:showAsAction="never"/>
+
+    <item
+        android:id="@+id/share"
+        android:title="@string/share"
+        android:icon="@drawable/ic_share_white_24dp"
+        app:showAsAction="ifRoom">
+
+        <menu>
+            <item android:id="@+id/share_quote"
+                android:title="@string/share_quote" />
+
+            <item android:id="@+id/share_remark"
+                android:title="@string/share_remark" />
+
+            <item android:id="@+id/share_all"
+                android:title="@string/share_all" />
+        </menu>
+
+    </item>
+</menu>
