@@ -38,7 +38,7 @@ public class ShowQuoteActivity extends AppCompatActivity implements DatabaseQuot
     private Quote quote;
     private Book book;
     private Toolbar toolbar;
-    
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
