@@ -3,6 +3,7 @@ package com.example.android.ali.myquotes.ui;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -29,7 +30,9 @@ import com.google.firebase.auth.FirebaseUser;
 import java.util.Arrays;
 import java.util.List;
 
-public class QuotesListActivity extends AppCompatActivity implements QuotesAdapter.QuoteClickListener, DatabaseQuotes.DatabaseQuotesListener {
+public class QuotesListActivity extends AppCompatActivity implements
+        QuotesAdapter.QuoteClickListener,
+        DatabaseQuotes.DatabaseQuotesListener, SwipeRefreshLayout.OnRefreshListener {
 
     private FirebaseAuth mAuth;
     private static int RC_SIGN_IN = 123;
@@ -40,6 +43,8 @@ public class QuotesListActivity extends AppCompatActivity implements QuotesAdapt
     private LinearLayoutManager mLayoutManager;
     private FloatingActionButton mAddQuoteFAB;
     private ProgressBar progressBar;
+    private SwipeRefreshLayout swipeRefreshLayout;
+
 
     @Override
     public void updateQuote(Quote quote) {
@@ -61,7 +66,40 @@ public class QuotesListActivity extends AppCompatActivity implements QuotesAdapt
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+        progressBar = findViewById(R.id.progress_bar);
+        mAdapter = new QuotesAdapter(this, this);
+        db = new DatabaseQuotes(this, book.getId(), this);
+        mRecyclerView = findViewById(R.id.rv_quotes_list);
+        mLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mAddQuoteFAB = findViewById(R.id.fab_add_quote);
+        swipeRefreshLayout = findViewById(R.id.swipe_refresh);
+        swipeRefreshLayout.setOnRefreshListener(this);
+
+
         updateUI(mAuth.getCurrentUser());
+    }
+
+    private void updateUI(FirebaseUser user){
+
+        if(user == null){
+            createSigninIntent();
+        }
+        else{
+            db.getBookQuotes();
+            getSupportActionBar().setTitle(book.getTitle());
+            getSupportActionBar().setSubtitle(book.getAuthor());
+
+            mAddQuoteFAB.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(QuotesListActivity.this, AddQuoteActivity.class);
+                    intent.putExtra(AppConstants.EXTRA_BOOK, book);
+                    startActivity(intent);
+                }
+            });
+        }
     }
 
     @Override
@@ -164,38 +202,15 @@ public class QuotesListActivity extends AppCompatActivity implements QuotesAdapt
         startActivity(intent);
     }
 
-    private void updateUI(FirebaseUser user){
-        progressBar = findViewById(R.id.progress_bar);
-        mAdapter = new QuotesAdapter(this, this);
-        db = new DatabaseQuotes(this, book.getId(), this);
-        mRecyclerView = findViewById(R.id.rv_quotes_list);
-        mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mAddQuoteFAB = findViewById(R.id.fab_add_quote);
-
-        if(user == null){
-            createSigninIntent();
-        }
-        else{
-            db.getBookQuotes();
-            getSupportActionBar().setTitle(book.getTitle());
-            getSupportActionBar().setSubtitle(book.getAuthor());
-
-            mAddQuoteFAB.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(QuotesListActivity.this, AddQuoteActivity.class);
-                    intent.putExtra(AppConstants.EXTRA_BOOK, book);
-                    startActivity(intent);
-                }
-            });
-        }
-    }
-
     @Override
     protected void onRestart() {
         super.onRestart();
         db.getBookQuotes();
+    }
+
+    @Override
+    public void onRefresh() {
+        db.getBookQuotes();
+        swipeRefreshLayout.setRefreshing(false);
     }
 }

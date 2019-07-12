@@ -2,6 +2,7 @@ package com.example.android.ali.myquotes.adapters;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import com.example.android.ali.myquotes.R;
 import com.example.android.ali.myquotes.model.Quote;
+import com.example.android.ali.myquotes.utils.ColorUtils;
 
 import java.util.List;
 
@@ -43,8 +45,12 @@ public class QuotesAdapter extends RecyclerView.Adapter<QuotesAdapter.QuoteViewH
 
     @Override
     public void onBindViewHolder(@NonNull QuoteViewHolder quoteViewHolder, int i) {
-        String quote = mQuotes.get(i).getText();
+        String quote = mQuotes.get(i).getText().isEmpty()? mContext.getString(R.string.empty): mQuotes.get(i).getText();
         quoteViewHolder.quoteTextView.setText(quote);
+        String colorString = mQuotes.get(i).getColor();
+
+        ColorUtils colorUtils = new ColorUtils(mContext);
+        quoteViewHolder.cardView.setCardBackgroundColor(colorUtils.getColorFromString(colorString));
     }
 
     @Override
@@ -61,9 +67,11 @@ public class QuotesAdapter extends RecyclerView.Adapter<QuotesAdapter.QuoteViewH
 
     public class QuoteViewHolder extends RecyclerView.ViewHolder{
         TextView quoteTextView;
+        CardView cardView;
         public QuoteViewHolder(@NonNull View itemView) {
             super(itemView);
             quoteTextView = itemView.findViewById(R.id.tv_quote);
+            cardView = itemView.findViewById(R.id.cardview_quote);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

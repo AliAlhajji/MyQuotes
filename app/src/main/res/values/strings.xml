@@ -135,9 +135,12 @@
     <string name="share_all">Share all</string>
     <string name="page">page</string>
     <string name="my_remark_on_this">My remark on this quote:</string>
+    <string name="empty">EMPTY</string>
 
     <string-array name="colors">
+        <item name="white">White</item>
         <item name="red">Red</item>
         <item name="blue">Blue</item>
+        <item name="green">Green</item>
     </string-array>
 </resources>

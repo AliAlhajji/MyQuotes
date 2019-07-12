@@ -57,6 +57,16 @@ public class MainActivity extends AppCompatActivity implements BooksAdapter.OnCl
 
         mAuth = FirebaseAuth.getInstance();
 
+        progressBar = findViewById(R.id.progress_bar);
+        mAdapter = new BooksAdapter(this, this);
+        mRecyclerView = findViewById(R.id.rv_books_list);
+        mLayoutManager = new GridLayoutManager(this, 2);
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mAddBookFAB = findViewById(R.id.fab_add_book);
+        refreshLayout = findViewById(R.id.swipe_refresh);
+        refreshLayout.setOnRefreshListener(this);
+
         //If no user logged in, the app will open the login page automatically
         if(mAuth.getCurrentUser() == null){
             updateUI(null);
@@ -149,15 +159,6 @@ public class MainActivity extends AppCompatActivity implements BooksAdapter.OnCl
     }
 
     private void updateUI(FirebaseUser user){
-        progressBar = findViewById(R.id.progress_bar);
-        mAdapter = new BooksAdapter(this, this);
-        mRecyclerView = findViewById(R.id.rv_books_list);
-        mLayoutManager = new GridLayoutManager(this, 2);
-        mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setLayoutManager(mLayoutManager);
-        mAddBookFAB = findViewById(R.id.fab_add_book);
-        refreshLayout = findViewById(R.id.swipe_refresh);
-        refreshLayout.setOnRefreshListener(this);
 
         if(user == null){
             mAdapter.setData(null);

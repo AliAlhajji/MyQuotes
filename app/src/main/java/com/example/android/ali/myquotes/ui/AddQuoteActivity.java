@@ -1,12 +1,11 @@
 package com.example.android.ali.myquotes.ui;
 
-import android.content.Intent;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.android.ali.myquotes.R;
@@ -15,7 +14,6 @@ import com.example.android.ali.myquotes.model.Quote;
 import com.example.android.ali.myquotes.utils.AppConstants;
 import com.example.android.ali.myquotes.utils.DatabaseQuotes;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 
 public class AddQuoteActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
@@ -24,6 +22,7 @@ public class AddQuoteActivity extends AppCompatActivity {
     private Book book;
 
     private TextInputLayout mQuote, mPage, mRemark;
+    private Spinner mSpinner;
     private Button mSave;
 
     @Override
@@ -42,6 +41,9 @@ public class AddQuoteActivity extends AppCompatActivity {
         mPage = findViewById(R.id.et_quote_page);
         mRemark = findViewById(R.id.et_quote_remark);
         mSave = findViewById(R.id.button_save_quote);
+        mSpinner = findViewById(R.id.spinner_quote_color);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         if(getIntent().hasExtra(AppConstants.EXTRA_QUOTE)){
             quote = getIntent().getParcelableExtra(AppConstants.EXTRA_QUOTE);
@@ -61,9 +63,30 @@ public class AddQuoteActivity extends AppCompatActivity {
         });
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+        finish();
+        return super.onSupportNavigateUp();
+    }
+
+    private boolean validateInput(TextInputLayout textInputLayout){
+        if(textInputLayout.getEditText().getText().length() > 0){
+            textInputLayout.setErrorEnabled(false);
+            return true;
+        }
+        textInputLayout.setErrorEnabled(true);
+        textInputLayout.setError(getString(R.string.error_field_required));
+        return false;
+    }
+
     private void saveQuote(){
+        if(!validateInput(mQuote) && !validateInput(mRemark)){
+            return;
+        }
+
         String text = mQuote.getEditText().getText().toString();
         String remark = mRemark.getEditText().getText().toString();
+        String color = mSpinner.getSelectedItem().toString();
                         /*
                 Since it is allowed to leave the page field empty, we have to check if it's empty or not
                 before casting the string to int. An empty string will throw an exception.
@@ -79,17 +102,9 @@ public class AddQuoteActivity extends AppCompatActivity {
         }
         quote.setText(text);
         quote.setRemark(remark);
+        quote.setColor(color);
         db.saveQuote(quote);
         Toast.makeText(this, getString(R.string.data_add_successfully), Toast.LENGTH_SHORT).show();
-
-        Intent intent;
-        if(getIntent().hasExtra(AppConstants.EXTRA_QUOTE)){
-            intent = new Intent(this, ShowQuoteActivity.class);
-            intent.putExtra(AppConstants.EXTRA_BOOK_TITLE, getIntent().getStringExtra(AppConstants.EXTRA_BOOK_TITLE));
-            intent.putExtra(AppConstants.EXTRA_QUOTE, quote);
-            intent.putExtra(AppConstants.EXTRA_BOOK, book);
-            startActivity(intent);
-        }
         finish();
     }
 }

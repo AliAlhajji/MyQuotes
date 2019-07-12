@@ -15,4 +15,11 @@ public class AppConstants {
     public static String EXTRA_QUOTE_REMARK = "quote_remark";
     public static String EXTRA_BOOK_TITLE = "book_title";
 
+    //Colors
+    public static String CARDVIEW_WHITE = "White";
+    public static String CARDVIEW_RED = "Red";
+    public static String CARDVIEW_BLUE = "Blue";
+    public static String CARDVIEW_GREEN = "Green";
+
+
 }

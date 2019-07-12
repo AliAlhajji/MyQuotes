@@ -5,9 +5,6 @@ import android.os.Parcelable;
 
 import com.google.firebase.database.Exclude;
 
-import java.util.ArrayList;
-import java.util.List;
-
 public class Quote implements Parcelable {
     private String id;
     private int page;
@@ -15,6 +12,7 @@ public class Quote implements Parcelable {
     private String remark;
     private String color;
 
+    @Exclude
     public String getId() {
         return id;
     }

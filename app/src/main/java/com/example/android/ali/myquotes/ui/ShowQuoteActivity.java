@@ -1,14 +1,13 @@
 package com.example.android.ali.myquotes.ui;
 
-import android.content.DialogInterface;
+import  android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TabLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ShareActionProvider;
 import android.support.v7.widget.Toolbar;
-
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -19,6 +18,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.android.ali.myquotes.R;
 import com.example.android.ali.myquotes.model.Book;
@@ -29,7 +29,8 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import java.util.List;
 
-public class ShowQuoteActivity extends AppCompatActivity implements DatabaseQuotes.DatabaseQuotesListener {
+public class ShowQuoteActivity extends AppCompatActivity implements
+        DatabaseQuotes.DatabaseQuotesListener{
 
     private SectionsPagerAdapter mSectionsPagerAdapter;
     private ViewPager mViewPager;
@@ -53,30 +54,24 @@ public class ShowQuoteActivity extends AppCompatActivity implements DatabaseQuot
         quote = getIntent().getParcelableExtra(AppConstants.EXTRA_QUOTE);
         db = new DatabaseQuotes(this, book.getId(), this);
 
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        updateUI();
+
         db.getSingleQuote(quote.getId());
     }
 
     private void updateUI(){
         toolbar = findViewById(R.id.toolbar);
-
-        if(quote.getPage() != 0){
-            toolbar.setSubtitle(getString(R.string.page_number)+ " " + quote.getPage());
-        }
-        else{
-            toolbar.setSubtitle(getString(R.string.page_number)+ " unknown" );
-        }
-
         toolbar.setTitle(book.getTitle());
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        mViewPager = findViewById(R.id.container);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-        TabLayout tabLayout = findViewById(R.id.tabs);
-        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
-        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
     }
+
 
     @Override
     public boolean onSupportNavigateUp() {
@@ -146,8 +141,23 @@ public class ShowQuoteActivity extends AppCompatActivity implements DatabaseQuot
     @Override
     public void updateQuote(Quote quote) {
         this.quote = quote;
-        updateUI();
+
+        if(quote.getPage() != 0){
+            toolbar.setSubtitle(getString(R.string.page_number)+ " " + quote.getPage());
+        }
+        else{
+            toolbar.setSubtitle(getString(R.string.page_number)+ " unknown" );
+        }
+
+        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mSectionsPagerAdapter.setQuote(quote);
+        mViewPager = findViewById(R.id.container);
+        mViewPager.setAdapter(mSectionsPagerAdapter);
+        TabLayout tabLayout = findViewById(R.id.tabs);
+        mViewPager.addOnPageChangeListener(new TabLayout.TabLayoutOnPageChangeListener(tabLayout));
+        tabLayout.addOnTabSelectedListener(new TabLayout.ViewPagerOnTabSelectedListener(mViewPager));
     }
+
 
     private void deleteQuote(){
         final AlertDialog alertDialog = new AlertDialog.Builder(this)
@@ -186,13 +196,21 @@ public class ShowQuoteActivity extends AppCompatActivity implements DatabaseQuot
                     + "\n"
                     + quote.getRemark();
         }
+
         return shared;
     }
 
+
     public class SectionsPagerAdapter extends FragmentPagerAdapter {
+        Quote quote;
 
         public SectionsPagerAdapter(FragmentManager fm) {
             super(fm);
+        }
+
+        public void setQuote(Quote quote){
+            this.quote = quote;
+            notifyDataSetChanged();
         }
 
         @Override

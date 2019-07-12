@@ -3,4 +3,9 @@
     <color name="colorPrimary">#239ec0</color>
     <color name="colorPrimaryDark">#003657</color>
     <color name="colorAccent">#ff6940</color>
+
+    <color name="cardview_red">#ffc5b5</color>
+    <color name="cardview_blue">#bdedff</color>
+    <color name="cardview_white">#FFFFFF</color>
+    <color name="cardview_green">#c3ffb8</color>
 </resources>
